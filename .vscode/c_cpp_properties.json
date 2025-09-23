@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",                // or "Win32" if you're on Windows
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${env:Vulkan_INCLUDE_DIR}"     // Windows Vulkan SDK
+            ],
+            "defines": [],
+            "cStandard": "c17",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "windows-msvc-x64" // adapt to your platform
+        }
+    ],
+    "version": 4
+}
