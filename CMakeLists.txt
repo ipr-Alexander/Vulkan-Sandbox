@@ -15,7 +15,9 @@ find_package(tinyobjloader CONFIG REQUIRED)
 
 ADD_SUBDIRECTORY(src)
 
-target_link_libraries(VulkanSandbox PRIVATE Vulkan::Vulkan glm::glm glfw tinyobjloader::tinyobjloader)
+target_include_directories(VulkanSandbox PRIVATE ${Vulkan_INCLUDE_DIRS})
+
+target_link_libraries(VulkanSandbox PRIVATE Vulkan::Vulkan glm::glm-header-only glfw tinyobjloader::tinyobjloader)
 
 SET(ENV_ROOT ${CMAKE_CURRENT_DIR})
 
