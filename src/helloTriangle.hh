@@ -36,7 +36,7 @@ struct SwapChainSupportDetails
 {
     VkSurfaceCapabilitiesKHR capabilities;
     std::vector<VkSurfaceFormatKHR> formats;
-    std::vector<VkPresentModeKHR> presentMode;
+    std::vector<VkPresentModeKHR> presentModes;
 };
 
 VkResult
@@ -77,6 +77,8 @@ private:
 
     void createLogicalDevice();
 
+    void createSwapChain();
+
     bool isDeviceSuitable(VkPhysicalDevice device);
 
     bool checkDeviceExtensionSupport(VkPhysicalDevice device);
@@ -84,6 +86,10 @@ private:
     QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 
     SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
+
+    VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats);
+    VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes);
+    VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
 
     std::vector<const char *> getRequiredExtensions();
 
@@ -106,6 +112,11 @@ private:
 
     VkDebugUtilsMessengerEXT debugMessenger;
     VkSurfaceKHR surface;
+
+    VkSwapchainKHR swapChain;
+    std::vector<VkImage> swapChainImages;
+    VkFormat swapChainImageFormat;
+    VkExtent2D swapChainExtent;
 
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
     VkDevice device;
