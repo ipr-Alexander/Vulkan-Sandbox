@@ -82,6 +82,8 @@ private:
 
     void createImageViews();
 
+    void createRenderPass();
+
     void createGraphicsPipeline();
 
     bool isDeviceSuitable(VkPhysicalDevice device);
@@ -152,5 +154,9 @@ private:
     VkQueue graphicsQueue;
     VkQueue presentQueue;
 
+    VkRenderPass renderPass;
     VkPipelineLayout pipelineLayout;
+    VkPipeline graphicsPipeline;
+
+    std::vector<VkFramebuffer> swapChainFramebuffers;
 };
