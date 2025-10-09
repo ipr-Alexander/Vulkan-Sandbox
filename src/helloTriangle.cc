@@ -77,6 +77,7 @@ void HelloTriangleApplication::mainLoop()
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
+        drawFrame();
     }
 }
 
@@ -672,6 +673,10 @@ void HelloTriangleApplication::recordCommandBuffer(VkCommandBuffer commandBuffer
     {
         throw std::runtime_error("Failed to record command buffer!");
     }
+}
+
+void HelloTriangleApplication::drawFrame()
+{
 }
 
 bool HelloTriangleApplication::isDeviceSuitable(VkPhysicalDevice device)

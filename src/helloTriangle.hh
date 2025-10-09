@@ -94,6 +94,8 @@ private:
 
     void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
+    void drawFrame();
+
     bool isDeviceSuitable(VkPhysicalDevice device);
 
     bool checkDeviceExtensionSupport(VkPhysicalDevice device);
