@@ -96,6 +96,10 @@ private:
 
     void createSyncObjects();
 
+    void cleanupSwapChain();
+
+    void recreateSwapChain();
+
     void drawFrame();
 
     bool isDeviceSuitable(VkPhysicalDevice device);
@@ -147,6 +151,12 @@ private:
         return buffer;
     }
 
+    static void framebufferResizeCallback(GLFWwindow *window, int width, int height)
+    {
+        auto app = reinterpret_cast<HelloTriangleApplication *>(glfwGetWindowUserPointer(window));
+        app->framebufferResized = true;
+    }
+
 private:
     GLFWwindow *window;
     VkInstance instance;
@@ -172,9 +182,13 @@ private:
 
     std::vector<VkFramebuffer> swapChainFramebuffers;
     VkCommandPool commandPool;
-    VkCommandBuffer commandBuffer;
+    std::vector<VkCommandBuffer> commandBuffers;
 
-    VkSemaphore imageAvailableSemaphore;
-    VkSemaphore renderFinishedSemaphore;
-    VkFence inFlightFence;
+    std::vector<VkSemaphore> imageAvailableSemaphores;
+    std::vector<VkSemaphore> renderFinishedSemaphores;
+    std::vector<VkFence> inFlightFences;
+
+    bool framebufferResized = false;
+
+    uint32_t currentFrame = 0;
 };
