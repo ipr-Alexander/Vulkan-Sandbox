@@ -2,6 +2,8 @@ SET(files_project
 	main.cc
 	helloTriangle.cc
 	helloTriangle.hh
+	rendering/vertex.cc
+	rendering/vertex.hh
 )
 SET(all_files_project ${files_project})
 

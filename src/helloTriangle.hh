@@ -5,6 +5,8 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+
 #include <iostream>
 #include <stdexcept>
 #include <fstream>
@@ -89,6 +91,8 @@ private:
     void createFramebuffers();
 
     void createCommandPool();
+
+    void createVertexBuffer();
 
     void createCommandBuffer();
 
@@ -191,4 +195,6 @@ private:
     bool framebufferResized = false;
 
     uint32_t currentFrame = 0;
+
+    VkBuffer vertexBuffer;
 };
