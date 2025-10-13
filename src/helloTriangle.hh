@@ -122,6 +122,8 @@ private:
 
     std::vector<const char *> getRequiredExtensions();
 
+    uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+
     bool checkValidationLayerSupport();
 
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
@@ -197,4 +199,5 @@ private:
     uint32_t currentFrame = 0;
 
     VkBuffer vertexBuffer;
+    VkDeviceMemory vertexBufferMemory;
 };
