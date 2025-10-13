@@ -4,6 +4,7 @@
 
 int main()
 {
+    std::cout << "Start of Vulkan Sandbox program" << std::endl;
     HelloTriangleApplication app;
 
     try
@@ -16,7 +17,7 @@ int main()
         return EXIT_FAILURE;
     }
 
-    std::cout << "Hello World" << std::endl;
+    std::cout << "End of Vulkan Sandbox program" << std::endl;
 
     return EXIT_SUCCESS;
 }
