@@ -5,7 +5,9 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
+#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <iostream>
 #include <stdexcept>
@@ -14,6 +16,7 @@
 #include <vector>
 #include <optional>
 #include <set>
+#include <chrono>
 
 constexpr uint32_t WIDTH = 800;
 constexpr uint32_t HEIGHT = 600;
@@ -87,6 +90,8 @@ private:
 
     void createRenderPass();
 
+    void createDescriptorSetLayout();
+
     void createGraphicsPipeline();
 
     void createFramebuffers();
@@ -96,6 +101,10 @@ private:
     void createVertexBuffer();
 
     void createIndexBuffer();
+
+    void createUniformBuffers();
+
+    void updateUniformBuffer(uint32_t currentImage);
 
     void createCommandBuffer();
 
@@ -191,6 +200,7 @@ private:
     VkQueue transferQueue;
 
     VkRenderPass renderPass;
+    VkDescriptorSetLayout descriptorSetLayout;
     VkPipelineLayout pipelineLayout;
     VkPipeline graphicsPipeline;
 
@@ -211,4 +221,8 @@ private:
     VkDeviceMemory vertexBufferMemory;
     VkBuffer indexBuffer;
     VkDeviceMemory indexBufferMemory;
+
+    std::vector<VkBuffer> uniformBuffers;
+    std::vector<VkDeviceMemory> uniformBuffersMemory;
+    std::vector<void *> uniformBufferMapped;
 };

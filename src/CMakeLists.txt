@@ -4,6 +4,8 @@ SET(files_project
 	helloTriangle.hh
 	rendering/vertex.cc
 	rendering/vertex.hh
+	rendering/uniformBuffer.cc
+	rendering/uniformBuffer.hh
 )
 SET(all_files_project ${files_project})
 
