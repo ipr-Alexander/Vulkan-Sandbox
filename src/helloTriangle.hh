@@ -9,9 +9,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
-
 #include <iostream>
 #include <stdexcept>
 #include <fstream>
@@ -103,6 +100,10 @@ private:
 
     void createTextureImage();
 
+    void createTextureImageView();
+
+    void createTextureSampler();
+
     void createVertexBuffer();
 
     void createIndexBuffer();
@@ -143,6 +144,8 @@ private:
 
     VkCommandBuffer beginSingleTimeCommands();
     void endSingleTimeCommands(VkCommandBuffer commandBuffer);
+
+    VkImageView createImageView(VkImage image, VkFormat format);
 
     QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 
@@ -249,4 +252,6 @@ private:
 
     VkImage textureImage;
     VkDeviceMemory textureImageMemory;
+    VkImageView textureImageView;
+    VkSampler textureSampler;
 };
