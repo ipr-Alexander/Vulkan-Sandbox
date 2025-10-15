@@ -9,4 +9,7 @@ SET(files_project
 )
 SET(all_files_project ${files_project})
 
+
 ADD_EXECUTABLE(VulkanSandbox ${all_files_project})
+
+target_include_directories(VulkanSandbox PRIVATE ${CMAKE_SOURCE_DIR}/externals)

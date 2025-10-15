@@ -12,8 +12,10 @@ find_package(Vulkan REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(tinyobjloader CONFIG REQUIRED)
+include_directories(${CMAKE_SOURCE_DIR}/externals)
 
 ADD_SUBDIRECTORY(src)
+
 
 target_include_directories(VulkanSandbox PRIVATE ${Vulkan_INCLUDE_DIRS})
 
