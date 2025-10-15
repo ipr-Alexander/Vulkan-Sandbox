@@ -6,6 +6,7 @@
 #include <GLFW/glfw3.h>
 
 #define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -98,6 +99,8 @@ private:
 
     void createCommandPool();
 
+    void createDepthResources();
+
     void createTextureImage();
 
     void createTextureImageView();
@@ -145,9 +148,13 @@ private:
     VkCommandBuffer beginSingleTimeCommands();
     void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 
-    VkImageView createImageView(VkImage image, VkFormat format);
+    VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
 
     QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
+    VkFormat findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+
+    VkFormat findDepthFormat();
+    bool hasStencilComponent(VkFormat format);
 
     SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
 
@@ -254,4 +261,8 @@ private:
     VkDeviceMemory textureImageMemory;
     VkImageView textureImageView;
     VkSampler textureSampler;
+
+    VkImage depthImage;
+    VkDeviceMemory depthImageMemory;
+    VkImageView depthImageView;
 };
