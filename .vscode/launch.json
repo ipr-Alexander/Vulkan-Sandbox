@@ -6,7 +6,9 @@
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${command:cmake.launchTargetPath}",
-      "args": [],
+      "args": [
+        "-03"
+      ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
       "environment": [],
@@ -16,7 +18,7 @@
       "name": "CMake Release",
       "type": "cppvsdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build/release/${command:cmake.launchTargetName}",
+      "program": "${command:cmake.launchTargetName}",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
