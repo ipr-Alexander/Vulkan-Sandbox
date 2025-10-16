@@ -95,11 +95,11 @@ private:
 
     void createGraphicsPipeline();
 
-    void createFramebuffers();
-
     void createCommandPool();
 
     void createDepthResources();
+
+    void createFramebuffers();
 
     void createTextureImage();
 
