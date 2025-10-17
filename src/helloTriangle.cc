@@ -11,6 +11,7 @@
 #include <limits>
 #include <algorithm>
 #include <unordered_map>
+#include <random>
 
 #ifdef NDEBUG
 const bool enableValidationLayers = false;
@@ -358,6 +359,7 @@ void HelloTriangleApplication::createLogicalDevice()
     vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
     vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
     vkGetDeviceQueue(device, indices.transferFamily.value(), 0, &transferQueue);
+    vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &computeQueue);
 }
 
 void HelloTriangleApplication::createSwapChain()
@@ -543,9 +545,11 @@ void HelloTriangleApplication::createGraphicsPipeline()
 {
     auto vertShaderCode = readFile("src/shaders/vert.spv");
     auto fragShaderCode = readFile("src/shaders/frag.spv");
+    // auto computeShaderCode = readFile("src/shaders/compute.spv");
 
     VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
     VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);
+    // VkShaderModule computeShaderModule = createShaderModule(computeShaderCode);
 
     VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
     vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -558,6 +562,13 @@ void HelloTriangleApplication::createGraphicsPipeline()
     fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
     fragShaderStageInfo.module = fragShaderModule;
     fragShaderStageInfo.pName = "main";
+
+    // VkPipelineShaderStageCreateInfo computeShaderStageInfo{};
+    // computeShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    // computeShaderStageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+    // computeShaderStageInfo.module = computeShaderModule;
+    // computeShaderStageInfo.pName = "main";
+    // TODO: I think i will continue here soon. \o-o/
 
     VkPipelineShaderStageCreateInfo shaderStages[] = {vertShaderStageInfo, fragShaderStageInfo};
 
@@ -1370,6 +1381,10 @@ QueueFamilyIndices HelloTriangleApplication::findQueueFamilies(VkPhysicalDevice 
         {
             indices.transferFamily = i;
         }
+        if ((queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) && (queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT))
+        {
+            indices.computeFamily = i;
+        }
         i++;
     }
 
@@ -1677,6 +1692,52 @@ void HelloTriangleApplication::copyBufferToImage(VkBuffer buffer, VkImage image,
     vkCmdCopyBufferToImage(commandBuffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
     endSingleTimeCommands(commandBuffer);
+}
+
+void HelloTriangleApplication::createShaderStorageBuffers()
+{
+    storageBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+    storageBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
+
+    std::default_random_engine rndEngine((unsigned)time(nullptr));
+    std::uniform_real_distribution<float> rndDist(0.0f, 1.0f);
+
+    std::vector<Particle> particles(PARTICLE_COUNT);
+    for (auto &particle : particles)
+    {
+        float r = 0.25 * sqrt(rndDist(rndEngine));
+        float theta = rndDist(rndEngine) * 2 * M_PI;
+        float x = r * cos(theta);
+        float y = r * sin(theta);
+
+        particle.Position = glm::vec2(x, y);
+        particle.velocity = glm::normalize(glm::vec2(x, y)) * 0.00025f;
+        particle.color = glm::vec4(rndDist(rndEngine), rndDist(rndEngine), rndDist(rndEngine), 1.0f);
+    }
+
+    VkDeviceSize bufferSize = sizeof(Particle) * PARTICLE_COUNT;
+
+    VkBuffer stagingBuffer;
+    VkDeviceMemory stagingBufferMemory;
+    createBuffer(bufferSize,
+                 VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                 VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                 stagingBuffer, stagingBufferMemory);
+
+    void *data;
+    vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
+    memcpy(data, particles.data(), (size_t)bufferSize);
+    vkUnmapMemory(device, stagingBufferMemory);
+
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+    {
+        createBuffer(bufferSize,
+                     VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                     storageBuffers[i], storageBuffersMemory[i]);
+
+        copyBuffer(stagingBuffer, storageBuffers[i], bufferSize);
+    }
 }
 
 VkCommandBuffer HelloTriangleApplication::beginSingleTimeCommands()

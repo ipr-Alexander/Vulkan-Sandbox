@@ -11,6 +11,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "rendering/vertex.hh"
+#include "rendering/particles.hh"
 
 #include <iostream>
 #include <stdexcept>
@@ -27,6 +28,9 @@ constexpr uint32_t HEIGHT = 600;
 const std::string MODEL_PATH = "assets/models/viking_room.obj";
 const std::string TEXTURE_PATH = "assets/textures/viking_room.png";
 
+const uint32_t PARTICLE_COUNT = 200;
+const float M_PI = 3.14159265358979323846f;
+
 const std::vector<const char *> validationLayers = {
     "VK_LAYER_KHRONOS_validation"};
 
@@ -38,10 +42,11 @@ struct QueueFamilyIndices
     std::optional<uint32_t> graphicsFamily;
     std::optional<uint32_t> presentFamily;
     std::optional<uint32_t> transferFamily;
+    std::optional<uint32_t> computeFamily;
 
     bool isComplete()
     {
-        return graphicsFamily.has_value() && presentFamily.has_value() && transferFamily.has_value();
+        return graphicsFamily.has_value() && presentFamily.has_value() && transferFamily.has_value() && computeFamily.has_value();
     }
 };
 
@@ -152,6 +157,8 @@ private:
 
     void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
 
+    void createShaderStorageBuffers();
+
     VkCommandBuffer beginSingleTimeCommands();
     void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 
@@ -238,6 +245,7 @@ private:
     VkQueue graphicsQueue;
     VkQueue presentQueue;
     VkQueue transferQueue;
+    VkQueue computeQueue;
 
     VkRenderPass renderPass;
     VkDescriptorSetLayout descriptorSetLayout;
@@ -267,6 +275,9 @@ private:
     std::vector<VkBuffer> uniformBuffers;
     std::vector<VkDeviceMemory> uniformBuffersMemory;
     std::vector<void *> uniformBufferMapped;
+
+    std::vector<VkBuffer> storageBuffers;
+    std::vector<VkDeviceMemory> storageBuffersMemory;
 
     VkDescriptorPool descriptorPool;
     std::vector<VkDescriptorSet> descriptorSets;
